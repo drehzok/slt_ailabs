@@ -4,5 +4,6 @@ pandas==1.3.5
 pytorch_lightning==1.7.0
 torch==1.11.0+cu113
 torchmetrics==0.9.3
+sentencepiece
 transformers==4.21.1
 mlflow
