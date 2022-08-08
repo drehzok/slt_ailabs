@@ -42,6 +42,3 @@ class PLAggregate(LightningModule):
 
     self.log("WER", wer(pred_text, y_text))
 
-
-
-   
