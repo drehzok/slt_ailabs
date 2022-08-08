@@ -2,6 +2,7 @@ import torch as T
 import torch.nn as NN
 import torch.nn.functional as F
 import transformers as TRF
+import os
 from components import *
 
 
@@ -145,4 +146,4 @@ class Aggregate(NN.Module):
     x = x.squeeze(-1).squeeze(-1)
     x = self.feature2gloss.feature_extract(x)
     return x
-   
+ 
