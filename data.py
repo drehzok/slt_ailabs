@@ -14,7 +14,7 @@ class CustomDataset(Dataset):
 
   def __getitem__(self, idx):
     x,y = self.CFG.inoutput_pairgen(self.CFG, self.df, idx, mode=self.mode)
-    x = self.CFG.frames_path_to_input_format(CFG, x)
+    x = self.CFG.frames_path_to_input_format(self.CFG, x)
     x = pad(
       x,
       (0,0,0,0,0,self.CFG.maximum_length_vid - x.shape[1]),
@@ -67,4 +67,4 @@ class PLDataModule(LightningDataModule):
       batch_size = self.batch_size,
       num_workers = self.num_workers,
     )
-    
+ 
