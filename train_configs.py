@@ -3,9 +3,14 @@
 import os
 import pandas as pd
 import numpy as np
+import cv2
+import torch as T
+
+from glob import glob
 from transformers import MT5Tokenizer
 from pytorch_lightning.loggers import MLFlowLogger
 
+dataroot = "/home/ailabs/Desktop/sungbae/PHOENIX-2014-T-release-v3/PHOENIX-2014-T"
 
 class CFG:
   ###### Data stuffs #######
@@ -13,35 +18,34 @@ class CFG:
   maximum_length_seq = 50  #should be 120
   batch_size = 2
   num_workers = 4
-  dataroot = ""
   class train:
     df = pd.read_csv(
       os.path.join(
-        CFG.dataroot,
+        dataroot,
         "annotations/manual/PHOENIX-2014-T.train.corpus.csv"
       ),
       delimiter = "|"
     )
-    path = os.path.join(CFG.dataroot,"features/fullFrame-210x260px/train")
+    path = os.path.join(dataroot,"features/fullFrame-210x260px/train")
   class valid:
     df = pd.read_csv(
       os.path.join(
-        CFG.dataroot,
+        dataroot,
         "annotations/manual/PHOENIX-2014-T.dev.corpus.csv"
       ),
       delimiter = "|"
     )
-    path = os.path.join(CFG.dataroot,"features/fullFrame-210x260px/dev")
+    path = os.path.join(dataroot,"features/fullFrame-210x260px/dev")
 
   class test:
     df = pd.read_csv(
       os.path.join(
-        CFG.dataroot,
+        dataroot,
         "annotations/manual/PHOENIX-2014-T.test.corpus.csv"
       ),
       delimiter = "|"
     )
-    path = os.path.join(CFG.dataroot,"features/fullFrame-210x260px/test")
+    path = os.path.join(dataroot,"features/fullFrame-210x260px/test")
 
   def inoutput_pairgen(self, df: pd.DataFrame, id : int, mode = "train"):
     temp = df.iloc[id]
@@ -71,14 +75,14 @@ class CFG:
 
   ############ Model Stuffs ############
   tokenizer = MT5Tokenizer.from_pretrained("google/mt5-small")
-  S3D_weights = "/content/drive/MyDrive/S3D_kinetics400.pt"
+  S3D_weights = "/home/ailabs/Desktop/sungbae/S3D_kinetics400.pt"
 
 
   ############ Train Stuffs ############
   lr = 5e-5
   trainer_configs = {
-    "devices" = 1,
-    "accelerator" = "gpu"
-    "max_epochs" = 7
-    "logger" = MLFlowLogger(experiment_name = "s3d_translator") 
+    "devices" : 1,
+    "accelerator" : "gpu",
+    "max_epochs" : 7,
+    "logger" : MLFlowLogger(experiment_name = "s3d_translator") ,
   }
