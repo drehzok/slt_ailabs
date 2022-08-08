@@ -1,0 +1,8 @@
+pandas
+numpy
+torch
+pytorch_lightning
+sentencepiece
+transformers
+mlflow
+opencv-python
