@@ -58,6 +58,11 @@ class S3D(NN.Module):
     return F.avg_pool3d(y, (2, y.size(3), y.size(4)), stride=1)
 
 class Translator_TRF(NN.Module):
+  """
+  To-Do:
+    1. Move transformer part to the config
+    2. Hidden_size stuffs must be done through 
+  """
   def __init__(self):
     super().__init__()
     self.transformer = TRF.MT5ForConditionalGeneration.from_pretrained(
@@ -87,6 +92,8 @@ class Feature2Gloss(NN.Module):
   def __init__(self, gloss_vocab_size):
     """
     takes in T/4 x 843
+
+    This part should be be configurable through CFG class
     """
     super().__init__()
     self.head_mlp = NN.Linear(1024,2048)
