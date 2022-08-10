@@ -7,7 +7,7 @@ import cv2
 import torch as T
 
 from glob import glob
-from transformers import MT5Tokenizer, MT5ForConditionalGeneration
+from transformers import MT5Tokenizer, MT5ForConditionalGeneration, MT5Config
 from pytorch_lightning.loggers import MLFlowLogger
 
 dataroot = "/home/ailabs/Desktop/sungbae/PHOENIX-2014-T-release-v3/PHOENIX-2014-T"
@@ -76,7 +76,11 @@ class CFG:
   ############ Model Stuffs ############
   tokenizer = MT5Tokenizer.from_pretrained("google/mt5-small")
   trf = MT5ForConditionalGeneration.from_pretrained("google/mt5-small")
+  trfconfig = MT5Config()
   S3D_weights = "/home/ailabs/Desktop/sungbae/S3D_kinetics400.pt"
+  vl_mlp_hidden = 2048
+  vl_tempconv_hidden = 1024
+  gloss_vocab_size = 2048
 
 
   ############ Train Stuffs ############

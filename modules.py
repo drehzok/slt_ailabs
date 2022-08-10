@@ -74,32 +74,32 @@ class Translator_TRF(NN.Module):
     return self.transformer(inputs_embeds = embs, labels = targets)
 
 class TemporalConvBlock(NN.Module):
-  def __init__(self, in_ch, hid_ch):
+  def __init__(self, CFG):
     super().__init__()
 
-    self.conv1 = NN.Conv1d(in_ch, hid_ch, kernel_size = 3, stride = 1, padding = 1)
-    #self.conv2 = NN.Conv1d(hid_ch, in_ch, kernel_size = 3, stride = 1, padding = 1)
-    self.fc = NN.Linear(2048, 512)
+    self.conv1 = NN.Conv1d(CFG.vl_mlp_hidden, CFG.vl_tempconv_hidden, kernel_size = 3, stride = 1, padding = 1)
+    self.conv2 = NN.Conv1d(CFG.vl_tempconv_hidden, CFG.vl_mlp_hidden, kernel_size = 3, stride = 1, padding = 1)
+    self.fc = NN.Linear(CFG.vl_mlp_hidden, CFG.trfconfig.d_model)
 
   def forward(self, x):
     x = self.conv1(x)
     return F.relu(self.fc(T.permute(x,dims=(0,2,1))))
 
 class Feature2Gloss(NN.Module):
-  def __init__(self, gloss_vocab_size):
+  def __init__(self, CFG):
     """
     takes in T/4 x 843
 
     This part should be be configurable through CFG class
     """
     super().__init__()
-    self.head_mlp = NN.Linear(1024,2048)
-    self.mlp_bn = NN.BatchNorm1d(int(150/8))
-    self.tcon_bn = NN.BatchNorm1d(int(150/8))
+    self.head_mlp = NN.Linear(1024,CFG.vl_mlp_hidden)
+    self.mlp_bn = NN.BatchNorm1d(int(CFG.max_length_video/8))
+    self.tcon_bn = NN.BatchNorm1d(int(CFG.max_length_video/8))
 
-    self.temporal_conv = TemporalConvBlock(2048, 2048)
+    self.temporal_conv = TemporalConvBlock(CFG.vl_mlp_hidden, CFG.vl_tempconv_hidden)
 
-    self.glosser = NN.Linear(512, gloss_vocab_size)
+    self.glosser = NN.Linear(CFG.trfconfig.d_model, CFG.gloss_vocab_size)
 
 
   def feature_extract(self, x):
@@ -126,7 +126,7 @@ class Feature2Gloss(NN.Module):
 
 
 class Aggregate(NN.Module):
-  def __init__(self):
+  def __init__(self,CFG):
     super().__init__()
     self.video2feature = S3D(400)
     self.feature2gloss = Feature2Gloss(1000)

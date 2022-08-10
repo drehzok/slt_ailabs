@@ -2,7 +2,7 @@ from pytorch_lightning import Trainer
 
 from data import PLDataModule
 from model import PLAggregate
-from train_configs import CFG
+from mt5config import CFG
 
 import os
 
