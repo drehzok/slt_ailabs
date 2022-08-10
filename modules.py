@@ -94,8 +94,8 @@ class Feature2Gloss(NN.Module):
     """
     super().__init__()
     self.head_mlp = NN.Linear(1024,CFG.vl_mlp_hidden)
-    self.mlp_bn = NN.BatchNorm1d(int(CFG.max_length_video/8))
-    self.tcon_bn = NN.BatchNorm1d(int(CFG.max_length_video/8))
+    self.mlp_bn = NN.BatchNorm1d(int(CFG.maximum_length_video/8))
+    self.tcon_bn = NN.BatchNorm1d(int(CFG.maximum_length_video/8))
 
     self.temporal_conv = TemporalConvBlock(CFG.vl_mlp_hidden, CFG.vl_tempconv_hidden)
 
