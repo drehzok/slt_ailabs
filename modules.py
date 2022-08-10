@@ -129,8 +129,8 @@ class Aggregate(NN.Module):
   def __init__(self,CFG):
     super().__init__()
     self.video2feature = S3D(400)
-    self.feature2gloss = Feature2Gloss(1000)
-    self.gloss2text = Translator_TRF()
+    self.feature2gloss = Feature2Gloss(CFG)
+    self.gloss2text = Translator_TRF(CFG)
 
   def forward(self,x,target):
     x = self.video2feature.extract_features(x)
