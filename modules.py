@@ -66,9 +66,10 @@ class Translator_TRF(NN.Module):
   def __init__(self,CFG):
     super().__init__()
     self.transformer = CFG.trf
+    self.maxlen = CFG.maximum_length_seq
 
   def generate(self, embs):
-    return self.transformer.generate(inputs_embeds = embs)
+    return self.transformer.generate(inputs_embeds = embs, max_new_tokens=self.maxlen)
 
   def forward(self, embs, targets):
     return self.transformer(inputs_embeds = embs, labels = targets)
@@ -82,7 +83,8 @@ class TemporalConvBlock(NN.Module):
     self.fc = NN.Linear(CFG.vl_mlp_hidden, CFG.trfconfig.d_model)
 
   def forward(self, x):
-    x = self.conv1(x)
+    x = F.relu(self.conv1(x))
+    x = F.relu(self.conv2(x))
     return F.relu(self.fc(T.permute(x,dims=(0,2,1))))
 
 class Feature2Gloss(NN.Module):
@@ -97,7 +99,7 @@ class Feature2Gloss(NN.Module):
     self.mlp_bn = NN.BatchNorm1d(int(CFG.maximum_length_vid/8))
     self.tcon_bn = NN.BatchNorm1d(int(CFG.maximum_length_vid/8))
 
-    self.temporal_conv = TemporalConvBlock(CFG.vl_mlp_hidden, CFG.vl_tempconv_hidden)
+    self.temporal_conv = TemporalConvBlock(CFG)
 
     self.glosser = NN.Linear(CFG.trfconfig.d_model, CFG.gloss_vocab_size)
 
