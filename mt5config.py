@@ -1,6 +1,5 @@
 ########## Config stuffs #######
 
-from glob import glob
 from transformers import MT5Tokenizer, MT5ForConditionalGeneration, MT5Config
 from pytorch_lightning.loggers import MLFlowLogger
 from baseconfig import CFG
@@ -20,5 +19,5 @@ CFG.trainer_configs = {
   "devices" : 1,
   "accelerator" : "gpu",
   "max_epochs" : 7,
-  "logger" : MLFlowLogger(experiment_name = "s3d_translator") ,
+  "logger" : MLFlowLogger(experiment_name = "s3d_translator_mt5") ,
 }
