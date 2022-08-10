@@ -1,9 +1,9 @@
 import torch as T
 import torch.nn as NN
 import torch.nn.functional as F
-import transformers as TRF
 import os
 from components import *
+from mt5config import CFG
 
 
 class S3D(NN.Module):
@@ -63,12 +63,9 @@ class Translator_TRF(NN.Module):
     1. Move transformer part to the config
     2. Hidden_size stuffs must be done through 
   """
-  def __init__(self):
+  def __init__(self,CFG):
     super().__init__()
-    self.transformer = TRF.MT5ForConditionalGeneration.from_pretrained(
-        "google/mt5-small"
-    )
-
+    self.transformer = CFG.trf
 
   def generate(self, embs):
     return self.transformer.generate(inputs_embeds = embs)
