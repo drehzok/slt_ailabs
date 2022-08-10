@@ -2,7 +2,7 @@
 
 from glob import glob
 from transformers import MT5Tokenizer, MT5ForConditionalGeneration, MT5Config
-from pytorch_lighting.loggers import MLFlowLogger
+from pytorch_lightning.loggers import MLFlowLogger
 from baseconfig import CFG
 
 ############ Model Stuffs ############
