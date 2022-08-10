@@ -8,7 +8,7 @@ from modules import *
 class PLAggregate(LightningModule):
   def __init__(self, CFG = None):
     super().__init__()
-    self.model = Aggregate()
+    self.model = Aggregate(CFG)
     self.CFG = CFG
 
   def forward(self,x):
