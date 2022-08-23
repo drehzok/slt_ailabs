@@ -7,6 +7,9 @@ from mt5config import CFG
 
 
 class S3D(NN.Module):
+  """
+  Taken from kylemin/S3D github
+  """
   def __init__(self, num_class):
     super(S3D, self).__init__()
     self.base = NN.Sequential(
@@ -59,9 +62,7 @@ class S3D(NN.Module):
 
 class Translator_TRF(NN.Module):
   """
-  To-Do:
-    1. Move transformer part to the config
-    2. Hidden_size stuffs must be done through 
+  Assumption - CFG.trf is a transformer architecture from huggingface
   """
   def __init__(self,CFG):
     super().__init__()
@@ -75,6 +76,9 @@ class Translator_TRF(NN.Module):
     return self.transformer(inputs_embeds = embs, labels = targets)
 
 class TemporalConvBlock(NN.Module):
+  """
+  Currently - Conv1d but maybe it is worth trying Conv3D with (kernel_size, 1, 1) filter
+  """
   def __init__(self, CFG):
     super().__init__()
 

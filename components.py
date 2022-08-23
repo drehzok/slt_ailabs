@@ -3,6 +3,9 @@ import torch.nn as NN
 import torch.nn.functional as F
 
 class BasicConv3d(NN.Module):
+  """
+  3D convolution block with batchnorm and relu activation
+  """
   def __init__(self, in_planes, out_planes, kernel_size, stride, padding=0):
     super(BasicConv3d, self).__init__()
     self.conv = NN.Conv3d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding, bias=False)
@@ -16,6 +19,9 @@ class BasicConv3d(NN.Module):
     return x
 
 class SepConv3d(NN.Module):
+  """
+  Separated 3D convolution block - 2D x 1D conv
+  """
   def __init__(self, in_planes, out_planes, kernel_size, stride, padding=0):
     super(SepConv3d, self).__init__()
     self.conv_s = NN.Conv3d(in_planes, out_planes, kernel_size=(1,kernel_size,kernel_size), stride=(1,stride,stride), padding=(0,padding,padding), bias=False)
