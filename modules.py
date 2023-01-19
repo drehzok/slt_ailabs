@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import os
 from components import *
 from mt5config import CFG
+from torch_geometric_temporal.nn.recurrent import A3TGCN2
 
 
 class S3D(NN.Module):
@@ -129,6 +130,29 @@ class Feature2Gloss(NN.Module):
 
     return self.glosser(x)
 
+class TGCN(NN.Module):
+  def __init__(self, CFG):
+    self.window = CFG.tgcn.window
+    self.tgcn = A3TGCN2(in_channels=3, out_channels=3, periods=self.window//2, batch_size=1)
+    self.lin = NN.Linear(399, CFG.trfconfig.d_model)
+    self.skeleton = CFG.tgcn.skeleton
+
+  def forward(self, x):
+    per_inc = window//2
+    output = None
+    i = 0
+    while i<data.shape[-1]//per_inc:
+      tempin = data[..., i*per_inc:i*per_inc+window-1]
+      temp = self.tgcn(tempin, self.skeleton).unsqueeze(-1)
+      if output is None:
+        output = temp
+      else:
+        output = T.cat((output, temp), dim=-1)
+      i += 1
+    shapes = output.shape
+    output = T.permute(output, dims=(0,3,1,2)).view(shapes[0], shapes[1], -1)
+    return self.lin(output)
+
 
 
 class Aggregate(NN.Module):
@@ -156,4 +180,17 @@ class Aggregate(NN.Module):
     x = x.squeeze(-1).squeeze(-1)
     x = self.feature2gloss.feature_extract(x)
     return x
+ 
+class TGCNAggregate(NN.Module):
+  def __init__(self, CFG):
+    super().__init__()
+    self.graph2gloss = TGCN(CFG)
+    self.gloss2text = Translator_TRF(CFG)
+
+  def forward(self, x, target):
+    x = self.graph2gloss = TGCN(x)
+    return self.gloss2text(x, target)
+
+  def inference_gen(self, x):
+    return self.gloss2text.generate(self.graph2gloss(TGCN(x)))
  
